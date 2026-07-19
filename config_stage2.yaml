@@ -1,0 +1,66 @@
+# ============ 模型 ============
+model: runs/train/stage1/weights/best.pt  # 加载 stage1 最优权重继续训练
+
+# ============ 数据集 ============
+path: data/radar_dataset
+train: images/train
+val: images/val
+names:
+  0: hero_red
+  1: hero_blue
+  2: engine_red
+  3: engine_blue
+  4: infantry_3_red
+  5: infantry_3_blue
+  6: infantry_4_red
+  7: infantry_4_blue
+  8: sentry_red
+  9: sentry_blue
+  10: drone_red
+  11: drone_blue
+
+# ============ 训练超参 ============
+epochs: 500                    # 第二轮训练 500 epoch
+batch: 128
+imgsz: 640                     # 低分辨率微调
+device: 0,1,2,3,4,5,6,7
+workers: 32
+lr0: 0.001                     # 微调降低学习率
+lrf: 0.001
+momentum: 0.937
+weight_decay: 0.0005
+warmup_epochs: 3
+warmup_momentum: 0.8
+warmup_bias_lr: 0.1
+box: 7.5
+cls: 0.5
+dfl: 1.5
+patience: 50
+save: true
+save_period: 10
+val: true
+amp: true
+cos_lr: false
+close_mosaic: 10
+
+# ============ 日志与可视化 ============
+project: runs/train
+name: stage2
+exist_ok: true
+plots: true
+resume: false
+
+# ============ 模型导出 ============
+export:
+  - format: onnx
+    half: true
+    imgsz: 1280
+  - format: onnx
+    half: true
+    imgsz: 640
+  - format: openvino
+    half: true
+    imgsz: 1280
+  - format: openvino
+    half: true
+    imgsz: 640

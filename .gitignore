@@ -1,0 +1,5 @@
+model_train/
+runs/
+__pycache__/
+*.pyc
+.env

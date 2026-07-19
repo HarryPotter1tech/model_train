@@ -1,0 +1,13 @@
+services:
+  radar-train:
+    build: .
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    volumes:
+      - ./data:/app/data
+      - ./runs:/app/runs
+      - ./config_stage1.yaml:/app/config_stage1.yaml
+      - ./config_stage2.yaml:/app/config_stage2.yaml
+      - ./config_stage3.yaml:/app/config_stage3.yaml
+    command: python train.py

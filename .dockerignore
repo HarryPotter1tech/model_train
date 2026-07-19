@@ -1,0 +1,6 @@
+model_train/
+.git/
+runs/
+__pycache__/
+*.pyc
+.gitkeep
