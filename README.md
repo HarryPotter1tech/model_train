@@ -6,12 +6,12 @@
 
 | id | 类别 | id | 类别 |
 |----|------|----|------|
-| 0 | hero_red | 1 | hero_blue |
-| 2 | engine_red | 3 | engine_blue |
-| 4 | infantry_3_red | 5 | infantry_3_blue |
-| 6 | infantry_4_red | 7 | infantry_4_blue |
-| 8 | sentry_red | 9 | sentry_blue |
-| 10 | drone_red | 11 | drone_blue |
+| 0 | hero-red | 1 | hero-blue |
+| 2 | engine-red | 3 | engine-blue |
+| 4 | infantry_3-red | 5 | infantry_3-blue |
+| 6 | infantry_4-red | 7 | infantry_4-blue |
+| 8 | sentry-red | 9 | sentry-blue |
+| 10 | drone-red | 11 | drone-blue |
 
 ## 目录结构
 
