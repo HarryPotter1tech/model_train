@@ -7,9 +7,9 @@
 | id | 类别 | id | 类别 |
 |----|------|----|------|
 | 0 | hero-red | 1 | hero-blue |
-| 2 | engine-red | 3 | engine-blue |
-| 4 | infantry_3-red | 5 | infantry_3-blue |
-| 6 | infantry_4-red | 7 | infantry_4-blue |
+| 2 | engineer-red | 3 | engineer-blue |
+| 4 | infantry3-red | 5 | infantry3-blue |
+| 6 | infantry4-red | 7 | infantry4-blue |
 | 8 | sentry-red | 9 | sentry-blue |
 | 10 | drone-red | 11 | drone-blue |
 
