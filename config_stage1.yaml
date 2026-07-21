@@ -2,7 +2,7 @@
 model: yolo26n.pt              # 预训练权重
 
 # ============ 数据集 ============
-path: data/radar_dataset
+path: /home/pinkpanda/Downloads/RadarDataset
 train: images/train
 val: images/val
 names:
