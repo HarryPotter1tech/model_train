@@ -2,7 +2,7 @@
 model: runs/train/stage2/weights/best.pt  # 加载 stage2 最优权重继续训练
 
 # ============ 数据集 ============
-path: /home/pinkpanda/Downloads/RadarDataset
+path: data/radar_dataset
 train: images/train
 val: images/val
 names:
