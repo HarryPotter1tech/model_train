@@ -71,7 +71,34 @@ data/radar_dataset/
 
 ---
 
-## 四、Docker 训练
+## 四、环境准备
+
+要求：
+- NVIDIA 驱动 ≥ 550（支持 CUDA 12.4）
+- Python 3.10+
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu124
+pip install ultralytics
+```
+
+## 五、本地训练
+
+```bash
+# 全部三阶段（默认）
+python train.py
+
+# 单阶段
+python train.py --config config_stage1.yaml
+
+# 可视化
+tensorboard --logdir runs/train
+```
+
+## 六、Docker 训练（备选）
 
 ### 4.1 构建镜像
 
@@ -131,7 +158,7 @@ docker compose run --rm -p 6006:6006 radar-train \
 
 ---
 
-## 五、训练策略
+## 七、训练策略
 
 | 阶段 | 参数文件 | epochs | imgsz | lr | 说明 |
 |------|---------|--------|-------|-----|------|
@@ -161,7 +188,7 @@ runs/train/
 
 ---
 
-## 六、自定义配置
+## 八、自定义配置
 
 修改 `config_stage*.yaml`：
 
@@ -177,7 +204,7 @@ runs/train/
 
 ---
 
-## 七、常见问题
+## 九、常见问题
 
 **Q: `data/` 目录不存在？**
 A: 手动创建：`mkdir -p data/radar_dataset/images/{train,val} data/radar_dataset/labels/{train,val}`
