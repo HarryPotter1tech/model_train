@@ -5,6 +5,6 @@ services:
     environment:
       - NVIDIA_VISIBLE_DEVICES=all
     volumes:
-      - /home/pinkpanda/Downloads/RadarDataset:/app/data/radar_dataset
+      - ./data:/app/data
       - ./runs:/app/runs
     command: python train.py

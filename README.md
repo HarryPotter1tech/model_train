@@ -52,42 +52,28 @@ data/radar_dataset/
 └── labels/val/00002.txt
 ```
 
-### 使用已有标注数据
+### 通过百度网盘获取数据
 
-整理好的数据在 `/home/pinkpanda/Downloads/RadarDataset/`，有两种方式使用：
-
-**方式一：复制到项目目录**
-
-```bash
-cp -r /home/pinkpanda/Downloads/RadarDataset/images data/radar_dataset/
-cp -r /home/pinkpanda/Downloads/RadarDataset/labels data/radar_dataset/
-```
-
-**方式二：软链接（推荐，不复制）**
+1. 从百度网盘下载 `RadarDataset.zip`
+2. 解压到项目目录：
 
 ```bash
-ln -s /home/pinkpanda/Downloads/RadarDataset/images data/radar_dataset/images
-ln -s /home/pinkpanda/Downloads/RadarDataset/labels data/radar_dataset/labels
+unzip RadarDataset.zip -d data/
 ```
 
-然后删除原有的空目录（如果有）：
+最终结构：
 
-```bash
-rm -rf data/radar_dataset/images data/radar_dataset/labels
+```
+data/radar_dataset/
+├── images/train/   (4000 张)
+├── images/val/     (1000 张)
+├── labels/train/   (4000 个 .txt)
+└── labels/val/     (1000 个 .txt)
 ```
 
-### Docker 使用外部数据
+### Docker
 
-```bash
-docker run --gpus all -v /path/to/your/data:/app/data/radar_dataset ghcr.io/harrypotter1tech/model_train:latest
-```
-
-或修改 `docker-compose.yml` 中的 volumes：
-
-```yaml
-volumes:
-  - /home/pinkpanda/Downloads/RadarDataset:/app/data/radar_dataset
-```
+数据放在项目 `data/` 下即可，`docker-compose.yml` 已配置自动挂载。
 
 ## 训练
 
@@ -115,12 +101,9 @@ tensorboard --logdir runs/train
 ## Docker
 
 ```bash
-# 构建镜像（不包含数据，镜像约 8GB）
+# 构建镜像（数据不打包进镜像）
 docker build -t radar-model .
 
-# 挂载数据后训练
-docker run --gpus all \
-  -v /home/pinkpanda/Downloads/RadarDataset:/app/data/radar_dataset \
-  -v ./runs:/app/runs \
-  radar-model
+# 数据放到项目 data/ 下，直接使用 docker compose
+docker compose up
 ```
