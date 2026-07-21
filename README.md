@@ -73,12 +73,7 @@ data/radar_dataset/
 
 ## 四、Docker 训练
 
-### 4.1 安装 Docker
-
-- 安装 nvidia-docker：https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html
-- 验证：`docker run --rm --gpus all nvidia/cuda:12.4.0-base-ubuntu22.04 nvidia-smi`
-
-### 4.2 构建镜像
+### 4.1 构建镜像
 
 ```bash
 # 在项目根目录 RADAR-MODEL/ 下执行
@@ -87,7 +82,7 @@ docker build -t radar-model .
 
 > 镜像约 8GB，不包含数据。
 
-### 4.3 运行训练
+### 4.2 运行训练
 
 **完整三阶段（默认）：**
 
@@ -108,7 +103,7 @@ docker compose run --rm radar-train python train.py \
   --config config_stage1.yaml config_stage2.yaml config_stage3.yaml
 ```
 
-### 4.4 docker-compose.yml 说明
+### 4.3 docker-compose.yml 说明
 
 ```yaml
 services:
@@ -125,7 +120,7 @@ services:
 
 > 容器内的 `/app/data/radar_dataset/` 对应你主机上的 `./data/radar_dataset/`。
 
-### 4.5 TensorBoard 可视化
+### 4.4 TensorBoard 可视化
 
 ```bash
 docker compose run --rm -p 6006:6006 radar-train \
