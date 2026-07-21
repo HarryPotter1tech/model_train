@@ -23,22 +23,73 @@ RADAR-MODEL/
 ├── train.py                # 训练入口
 ├── data/
 │   └── radar_dataset/
-│       ├── images/train/   # 训练图片 (YOLO格式)
-│       ├── images/val/     # 验证图片
-│       ├── labels/train/   # 训练标签 (.txt)
-│       └── labels/val/     # 验证标签
-├── runs/train/             # 训练输出（自动生成）
-│   ├── stage1/
-│   ├── stage2/
-│   └── stage3/
+│       ├── images/train/   # → 放入训练图片
+│       ├── images/val/     # → 放入验证图片
+│       ├── labels/train/   # → 放入训练标签
+│       └── labels/val/     # → 放入验证标签
 ├── Dockerfile
 ├── docker-compose.yml
 └── .dockerignore
 ```
 
-## 快速开始
+## 数据准备
 
-### 本地训练
+### 格式要求
+
+YOLO 格式，每张图片对应一个同名 `.txt` 标签文件，每行：
+
+```
+class_id x_center y_center width height
+```
+
+坐标归一化到 0-1，class_id 对应上表 0-11。
+
+```
+data/radar_dataset/
+├── images/train/00001.jpg
+├── images/val/00002.jpg
+├── labels/train/00001.txt
+└── labels/val/00002.txt
+```
+
+### 使用已有标注数据
+
+整理好的数据在 `/home/pinkpanda/Downloads/RadarDataset/`，有两种方式使用：
+
+**方式一：复制到项目目录**
+
+```bash
+cp -r /home/pinkpanda/Downloads/RadarDataset/images data/radar_dataset/
+cp -r /home/pinkpanda/Downloads/RadarDataset/labels data/radar_dataset/
+```
+
+**方式二：软链接（推荐，不复制）**
+
+```bash
+ln -s /home/pinkpanda/Downloads/RadarDataset/images data/radar_dataset/images
+ln -s /home/pinkpanda/Downloads/RadarDataset/labels data/radar_dataset/labels
+```
+
+然后删除原有的空目录（如果有）：
+
+```bash
+rm -rf data/radar_dataset/images data/radar_dataset/labels
+```
+
+### Docker 使用外部数据
+
+```bash
+docker run --gpus all -v /path/to/your/data:/app/data/radar_dataset ghcr.io/harrypotter1tech/model_train:latest
+```
+
+或修改 `docker-compose.yml` 中的 volumes：
+
+```yaml
+volumes:
+  - /home/pinkpanda/Downloads/RadarDataset:/app/data/radar_dataset
+```
+
+## 训练
 
 ```bash
 # 运行全部三阶段（默认）
@@ -46,54 +97,30 @@ python train.py
 
 # 运行指定阶段
 python train.py --config config_stage1.yaml
-python train.py --config config_stage1.yaml config_stage2.yaml config_stage3.yaml
 
 # 可视化
 tensorboard --logdir runs/train
 ```
 
-### Docker 训练
-
-```bash
-# 构建并训练（自动挂载 data/ 和 runs/）
-docker compose up
-
-# 单阶段
-docker compose run --rm radar-train python train.py --config config_stage1.yaml
-
-# TensorBoard
-docker compose run --rm -p 6006:6006 radar-train tensorboard --logdir runs/train --bind_all
-```
-
 ## 训练策略
 
-| 阶段 | 配置 | epochs | imgsz | 说明 |
-|------|------|--------|-------|------|
-| 1 | config_stage1.yaml | 300 | 1280 | 高分辨率初始训练 |
-| 2 | config_stage2.yaml | 500 | 640 | 低分辨率微调 |
-| 3 | config_stage3.yaml | 700 | 1280 | 高分辨率精调 |
+| 阶段 | 配置 | epochs | imgsz | lr | 说明 |
+|------|------|--------|-------|-----|------|
+| 1 | config_stage1.yaml | 300 | 1280 | 0.01 | 高分辨率初始训练 |
+| 2 | config_stage2.yaml | 500 | 640 | 0.001 | 低分辨率微调（resume stage1） |
+| 3 | config_stage3.yaml | 700 | 1280 | 0.0005 | 高分辨率精调（resume stage2） |
 
-每阶段自动加载上一阶段最优权重（`runs/train/stageN/weights/best.pt`），训练完成后自动导出 ONNX + OpenVINO。
+训练完成后自动导出 ONNX + OpenVINO（1280 和 640 双尺寸）。
 
-## 数据准备
+## Docker
 
-图片放入 `data/radar_dataset/images/{train,val}/`，对应 YOLO 格式标签放入 `data/radar_dataset/labels/{train,val}/`。
+```bash
+# 构建镜像（不包含数据，镜像约 8GB）
+docker build -t radar-model .
 
-标签格式：每行 `class_id x_center y_center width height`（归一化 0-1）。
-
-## 模型导出
-
-训练完成后自动导出到 `runs/train/stageN/weights/`：
-
-```
-best.onnx
-best_openvino_model/
-```
-
-也可手动导出：
-
-```python
-from ultralytics import YOLO
-YOLO("runs/train/stage3/weights/best.pt").export(format="onnx", half=True)
-YOLO("runs/train/stage3/weights/best.pt").export(format="openvino", half=True)
+# 挂载数据后训练
+docker run --gpus all \
+  -v /home/pinkpanda/Downloads/RadarDataset:/app/data/radar_dataset \
+  -v ./runs:/app/runs \
+  radar-model
 ```
