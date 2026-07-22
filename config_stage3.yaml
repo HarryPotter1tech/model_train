@@ -7,16 +7,16 @@ train: images/train
 val: images/val
 names:
   0: hero-red
-  1: hero-blue
-  2: engineer-red
-  3: engineer-blue
-  4: infantry3-red
-  5: infantry3-blue
-  6: infantry4-red
-  7: infantry4-blue
-  8: sentry-red
-  9: sentry-blue
-  10: drone-red
+  1: engineer-red
+  2: infantry3-red
+  3: infantry4-red
+  4: sentry-red
+  5: drone-red
+  6: hero-blue
+  7: engineer-blue
+  8: infantry3-blue
+  9: infantry4-blue
+  10: sentry-blue
   11: drone-blue
 
 # ============ 训练超参 ============
@@ -50,17 +50,3 @@ exist_ok: true
 plots: true
 resume: false
 
-# ============ 模型导出 ============
-export:
-  - format: onnx
-    half: true
-    imgsz: 1280
-  - format: onnx
-    half: true
-    imgsz: 640
-  - format: openvino
-    half: true
-    imgsz: 1280
-  - format: openvino
-    half: true
-    imgsz: 640

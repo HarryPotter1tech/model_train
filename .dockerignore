@@ -2,6 +2,9 @@ model_train/
 .git/
 data/
 runs/
+model/
+final_export/
+.venv/
 __pycache__/
 *.pyc
 .gitkeep

@@ -13,14 +13,8 @@ def train(config_path: str):
     data_cfg = {k: cfg.pop(k) for k in data_keys if k in cfg}
     cfg["data"] = data_cfg
 
-    export_cfg = cfg.pop("export", None)
-
+    cfg.pop("export", None)
     model.train(**cfg)
-
-    if export_cfg:
-        for exp in export_cfg:
-            exp.setdefault("imgsz", cfg.get("imgsz", 640))
-            model.export(**exp)
 
 
 if __name__ == "__main__":
