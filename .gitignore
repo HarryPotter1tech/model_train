@@ -1,6 +1,5 @@
 model_train/
-runs/
-model/
+runs
 final_export/
 data/
 __pycache__/
